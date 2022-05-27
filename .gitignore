@@ -1,0 +1,3 @@
+# Project exclude paths
+/src/cmake-build-debug/
+/src/Praktikum-Primzahlen/CMakeFiles/
