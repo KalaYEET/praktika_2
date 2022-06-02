@@ -110,7 +110,7 @@ int main() {
 	cout << "Generierung von Primzahlen" << endl
 		 << "=========================="
 		 << endl << endl;
-	//fortuna();
+	fortuna();
 	millerRabin();
 
 	return 0;

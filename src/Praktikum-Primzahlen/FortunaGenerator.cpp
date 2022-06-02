@@ -30,32 +30,40 @@ FortunaGenerator::FortunaGenerator() {
 }
 
 bool FortunaGenerator::incCntr() {
-    if((last_reseed + 1) >= sizeof(cntr)) {
-        //cntr[] = cntr[ ]; keine Ahnung an welcher stelle
-        return true;
+    for (int i = 0; i < sizeof(cntr); i++) {
+        cntr[i] += 1;
+        if(cntr[i] != 0)
+            return true;
+        if(i + 1 >= 16)
+            return false;
     }
-    return false;
+    //eventuelle Lösung
 }
 
 void FortunaGenerator::reseed(byte* seed, unsigned int size) {
     byte skey[sizeof(key) + size];
-    for (int i = 0; i < sizeof(key); ++i) {
+    for (int i = 0; i < sizeof(key); i++) {
         skey[i] = key[i];
-        if(i < size){
-            skey[sizeof(key + i)] = seed[i];
-        }
+    }
+    for (int i = 0; i < size; i++) {
+        skey[sizeof(key) + i] = seed[i];
     }
     SHA256 hash;
-    ArraySource(skey, true ,new HashFilter(hash,//dem Filter HashFilter wird zur berechnung der Prüfsumme eine geeignete Hashfunktion übergeben
+    ArraySource(skey, true ,new HashFilter(hash,  //dem Filter HashFilter wird zur berechnung der Prüfsumme eine geeignete Hashfunktion übergeben
                                                new ArraySink(key, 32)));
     this->incCntr();
 }  //keine Ahnung ob das stimmt
 
 bool FortunaGenerator::getBit() {
-    //s = s*s mod n, return s mod 2
+
 }
 
 byte FortunaGenerator::getByte() {
+    byte b;
+    for (int i = 0; i < 8; i++) {
+        b = 2 * b + getBit();
+    }
+    return b;
 }
 
 void FortunaGenerator::generateBlocks(byte* buffer, unsigned int n) {

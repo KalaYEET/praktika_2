@@ -124,6 +124,15 @@ Integer MillerRabinTest::exp(const Integer& b, const Integer& e) {
 }
 
 bool MillerRabinTest::searchSqrt(const Integer &n, Integer& r) {
+    /*************************************************************************
+    * @details Die Funktion berechnet in einer do-while schleife, ob der übergebene Parameter n eine Ganzzahlige Quadretwurzel besitzt.
+     * \n
+    *
+    *
+    * @param n ist const Integer, e ist eine unsigned int call-by-reference
+    *
+    * @return true, falls n eine Ganzahlige Quadratwurzel besitzt. false, falls nicht. In jedem Fall wird die errechnete Wurzel in die Variable r geschrieben.
+    *************************************************************************/
     Integer l = n.BitCount() + 1;
     Integer y;
     y = exp(2, l);
@@ -137,6 +146,15 @@ bool MillerRabinTest::searchSqrt(const Integer &n, Integer& r) {
 }
 
 bool MillerRabinTest::searchRoot(const Integer &n, unsigned int k, Integer &r)  {
+    /*************************************************************************
+    * @details Die Funktion ist eine erweiterung der searchSqrt Funktion. Sie berechnet, ob n eine k-te Wurzel besitzt.
+     * \n
+    *
+    *
+    * @param n ist const Integer, k ist eine unsigned int call-by-reference, r ist eine Integer call-by-reference
+    *
+    * @return true, falls n eine k-te Wurzel besitzt. false, falls nicht. In jedem Fall wird die errechnete Wurzel in die Variable r geschrieben und der exponent in die Variable k.
+    *************************************************************************/
     Integer l = n.BitCount()/k + 1;
     Integer y = exp(2, l);;
     do{
@@ -160,7 +178,17 @@ bool MillerRabinTest::extendedEuklid(
 }
 
 bool MillerRabinTest::isIntegerPower(const Integer& n, Integer& b, unsigned int& e) {
-    //b = Basis der GZ-Potenz (falls nn eine GZ-Potenz ist)
+    /*************************************************************************
+    * @details Die Funktion ruft die Funktion searchRoot  in einer Schleife auf. Diese läuft n.bitCount lang und
+     * wird abgebrochen, wenn das Ergebnis der Funktion true zurückgibt\n
+    *
+    *
+    * @param n ist const Integer, b eine Integer call-by-reference, e ist eine unsigned int call-by-reference
+    *
+    * @return true, falls n eine Ganzahl-Potenz ist. false, falls nicht. In jedem Fall werden die Variablen e und k verändert.
+   *************************************************************************/
+
+    //b = Basis der GZ-Potenz (falls n eine GZ-Potenz ist)
     //e = exponent der GZ-Potenz
     bool x;
     while(e <= n.BitCount())
