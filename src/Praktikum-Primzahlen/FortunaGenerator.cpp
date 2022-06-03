@@ -55,13 +55,17 @@ void FortunaGenerator::reseed(byte* seed, unsigned int size) {
 }  //keine Ahnung ob das stimmt
 
 bool FortunaGenerator::getBit() {
-
+    byte bit[1];
+    generateBlocks(bit, 1);
+    return bit[0];
 }
 
 byte FortunaGenerator::getByte() {
+    byte bit[8];
     byte b;
+    generateBlocks(bit, 8);
     for (int i = 0; i < 8; i++) {
-        b = 2 * b + getBit();
+        b = 2 * b + bit[i];
     }
     return b;
 }
@@ -75,17 +79,19 @@ void FortunaGenerator::generateBlocks(byte* buffer, unsigned int n) {
     {
         byte r[16 * n];
         for (int i = 0; i < n; i++) {
-            CTR_Mode<AES>::Decryption ctr_dec;//Betriebsmodus des Kryptosystems AES auf Entschlüsselung
+            ECB_Mode<AES>::Encryption aes_enc;//Betriebsmodus des Kryptosystems AES auf Entschlüsselung
+            aes_enc.SetKey(key, sizeof(key));
             ArraySource(key, true,
-                         new HexDecoder(new ArraySink(r, 16)));
+                        new StreamTransformationFilter( aes_enc,
+                                                        new HexEncoder(
+                                                                new ArraySink(r, 16))));
+            buffer[i] = r[i];
         }
     }
 }
             //???????????????????????
 void FortunaGenerator::getBlock(byte* buffer, unsigned int n) {
-    for (int i = 0; i < n; ++i) {
-        buffer[i] = this->getByte();
-    }
+    this->generateBlocks(buffer, n);
 }
 
 uint32_t FortunaGenerator::getTimeStamp() const {
