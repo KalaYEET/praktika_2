@@ -125,43 +125,49 @@ Integer MillerRabinTest::exp(const Integer& b, const Integer& e) {
 
 bool MillerRabinTest::searchSqrt(const Integer &n, Integer& r) {
     /*************************************************************************
-    * @details Die Funktion berechnet in einer do-while schleife, ob der übergebene Parameter n eine Ganzzahlige Quadretwurzel besitzt.
+    * @details Die Funktion berechnet mithilfe einer do-while-schleife die größte Zahl x mit x² == n.
+     * Dadurch wird ermittelt, ob n eine Ganzzahlige Quadratwurzel besitzt.
      * \n
     *
     *
-    * @param n ist const Integer, e ist eine unsigned int call-by-reference
+    * @param n ist const Integer mit n >= 2, e ist eine unsigned int call-by-reference
     *
-    * @return true, falls n eine Ganzahlige Quadratwurzel besitzt. false, falls nicht. In jedem Fall wird die errechnete Wurzel in die Variable r geschrieben.
+    * @return true, falls n eine Ganzahlige Quadratwurzel besitzt. false, falls nicht.
+     * In jedem Fall wird die errechnete Wurzel in die Variable r geschrieben.
     *************************************************************************/
     Integer l = n.BitCount() + 1;
     Integer y;
-    y = exp(2, l);
+    y = exp(2, l);  //rechnung mit der ecp funktion f+r 2^l
     do{
         r = y;
-        y = (r  + (n / r)) / 2;
-    }while(y < r);
-    if((r*r) == n)
+        y = (r  + (n / r)) / 2;  //Rechnung aus der Vorlesungsfolie
+    }while(y < r);  //solange y kleiner als r ist kann r keine Wurzel von n sein.
+    if((r*r) == n)  // falls r² == n ist, ist r eine Ganzzahlige Quadratwurzel von n
         return true;
     return false;
 }
 
 bool MillerRabinTest::searchRoot(const Integer &n, unsigned int k, Integer &r)  {
     /*************************************************************************
-    * @details Die Funktion ist eine erweiterung der searchSqrt Funktion. Sie berechnet, ob n eine k-te Wurzel besitzt.
+    * @details Die Funktion ist eine erweiterung der searchSqrt Funktion.
+     * Anstatt der Quadratwurzel von n berechnet die erweiterte Funktion,
+     * ob die Zahl n eine k-te Wurzel besitzt mit k >= 2.
      * \n
     *
     *
-    * @param n ist const Integer, k ist eine unsigned int call-by-reference, r ist eine Integer call-by-reference
+    * @param n ist const Integer mit n >= 2,, k ist eine unsigned int call-by-reference mit k >= 2,
+     * r ist eine Integer call-by-reference
     *
-    * @return true, falls n eine k-te Wurzel besitzt. false, falls nicht. In jedem Fall wird die errechnete Wurzel in die Variable r geschrieben und der exponent in die Variable k.
+    * @return true, falls n eine k-te Wurzel besitzt. false, falls nicht.
+     *In jedem Fall wird die errechnete Wurzel in die Variable r geschrieben und der exponent in die Variable k.
     *************************************************************************/
-    Integer l = n.BitCount()/k + 1;
+    Integer l = n.BitCount()/k + 1;  //erweiterte Rechnung der searchSqrt-Funktion aus den Folien
     Integer y = exp(2, l);;
     do{
         r = y;
-        y = ((k - 1) * r + n / exp(r, k-1)) / k;
+        y = ((k - 1) * r + n / exp(r, k-1)) / k; //erweiterte Rechnung der searchSqrt-Funktion aus den Folien
     }while(y < r);
-    if(exp(r, k) == n)
+    if(exp(r, k) == n)  // falls r^k == n ist, ist k eine Ganzzahlpotenz von n und r die k-te Wurzel von n
         return true;
     return false;
 }
@@ -180,12 +186,15 @@ bool MillerRabinTest::extendedEuklid(
 bool MillerRabinTest::isIntegerPower(const Integer& n, Integer& b, unsigned int& e) {
     /*************************************************************************
     * @details Die Funktion ruft die Funktion searchRoot  in einer Schleife auf. Diese läuft n.bitCount lang und
-     * wird abgebrochen, wenn das Ergebnis der Funktion true zurückgibt\n
+     * wird abgebrochen, wenn das Ergebnis der Funktion searchRoot true zurückgibt.
+     * Wenn die Funktion searchRoot false zurück gibt wird der Schleifenzähler erhöht\n
     *
     *
-    * @param n ist const Integer, b eine Integer call-by-reference, e ist eine unsigned int call-by-reference
+    * @param n ist const Integer mit n >= 2, b eine Integer call-by-reference,
+     * e ist eine unsigned int call-by-reference mit e >= 2.
     *
-    * @return true, falls n eine Ganzahl-Potenz ist. false, falls nicht. In jedem Fall werden die Variablen e und k verändert.
+    * @return true, falls n eine Ganzahl-Potenz ist. false, falls nicht.
+     * In jedem Fall werden die Variablen e und k verändert.
    *************************************************************************/
 
     //b = Basis der GZ-Potenz (falls n eine GZ-Potenz ist)
@@ -193,8 +202,8 @@ bool MillerRabinTest::isIntegerPower(const Integer& n, Integer& b, unsigned int&
     bool x;
     while(e <= n.BitCount())
     {
-        x = searchRoot(n, e, b);
-        if(x)
+        x = searchRoot(n, e, b);    //errechnen der e-ten Wurzel von n.
+        if(x)   //Falls die e-te Wurzel von ist wird true zurückgegeben. Falls nicht wird e um 1 erhöht und die Schleife wird erneut ausgeführt.
         {
             return true;
         }

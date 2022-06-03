@@ -104,6 +104,10 @@ void fortuna() {
     FortunaGenerator fort;
     byte seed [] = "0x7ab2af1a4561abf8";
     fort.reseed(seed, sizeof(seed));
+    byte buffer[16];
+    fort.getBlock(buffer, 16);
+
+    cout << endl << fort.getByte() << endl;
 }
 
 int main() {
@@ -111,7 +115,7 @@ int main() {
 		 << "=========================="
 		 << endl << endl;
 	fortuna();
-	millerRabin();
+	//millerRabin();
 
 	return 0;
 }
